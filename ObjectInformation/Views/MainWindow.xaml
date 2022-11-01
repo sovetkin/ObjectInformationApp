@@ -1,0 +1,118 @@
+﻿<Window x:Class="ObjectInformation.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:local="clr-namespace:ObjectInformation.Views"
+        xmlns:b="clr-namespace:ObjectInformation.Infrastructure.Behavior"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="0.7*"/>
+            <RowDefinition Height="0.3*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.7*"/>
+            <ColumnDefinition Width="0.3*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0" Grid.ColumnSpan="2">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Загрузить файл"
+                        Padding="10 5"
+                        Margin="10"
+                        Command="{Binding Path=LoadCommand}"/>
+                <TextBlock VerticalAlignment="Center"
+                           Margin="10"
+                           Text="{Binding StringFormat=Обрабатываемый файл: {0}, Path=FileInfo.FileName}"
+                           FontSize="14"/>
+            </StackPanel>
+        </Grid>
+        <DataGrid x:Name="datagrid"
+                  Grid.Row="1"
+                  Grid.RowSpan="2"
+                  ItemsSource="{Binding Path=Data}"
+                  AutoGenerateColumns="False"
+                  FontSize="14"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  SelectedItem="{Binding Path=SelectedObject}"
+                  SelectedIndex="0"
+                  SelectionMode="Single">
+            <DataGrid.Resources>
+                <Style x:Key="WrappedHeader"
+                       TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="ContentTemplate">
+                        <Setter.Value>
+                            <DataTemplate>
+                                <TextBlock TextWrapping="Wrap"
+                                           Text="{Binding}"
+                                           TextAlignment="Center"/>
+                            </DataTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Название"
+                                    IsReadOnly="true"
+                                    Binding="{Binding Path=Name}"/>
+                <DataGridTextColumn Header="Горизрнтальная координата, м."
+                                    IsReadOnly="False"
+                                    Binding="{Binding Path=Distance}"
+                                    HeaderStyle="{StaticResource WrappedHeader}"/>
+                <DataGridTextColumn Header="Вертикальная координата, ч."
+                                    IsReadOnly="False"
+                                    Binding="{Binding Path=Angle}"
+                                    HeaderStyle="{StaticResource WrappedHeader}"/>
+                <DataGridTextColumn Header="Горитзонтальный размер, м."
+                                    IsReadOnly="False"
+                                    Binding="{Binding Path=Width}"
+                                    HeaderStyle="{StaticResource WrappedHeader}"/>
+                <DataGridTextColumn Header="Вертикальный размер, ч."
+                                    IsReadOnly="False"
+                                    Binding="{Binding Path=Heigth}"
+                                    HeaderStyle="{StaticResource WrappedHeader}"/>
+                <DataGridTextColumn Header="IsDefect"
+                                    IsReadOnly="False"
+                                    Binding="{Binding Path=IsDefect}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <ListView Grid.Row="1"
+                  Grid.Column="1"
+                  ItemsSource="{Binding Path=CurrentItemData}"
+                  FontSize="14">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Path=Name}" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding Path=Value}" Margin="5 0"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <GroupBox Margin="5"
+                  Grid.Row="2"
+                  Grid.Column="1"
+                  Header="Графика"
+                  BorderBrush="Black">
+            <Canvas x:Name="Canvas">
+                <i:Interaction.Behaviors>
+                    <b:BindingToElementPropertyBehavior Target="{Binding CanvasWidth, Mode=TwoWay}" Property="ActualWidth"/>
+                    <b:BindingToElementPropertyBehavior Target="{Binding CanvasHeight, Mode=TwoWay}" Property="ActualHeight"/>
+                </i:Interaction.Behaviors>
+                <Rectangle Canvas.Left="{Binding RectangleData.X1}"
+                           Canvas.Top="{Binding RectangleData.Y1}"
+                           Height="{Binding RectangleData.Y2}"
+                           Width="{Binding RectangleData.X2}"
+                           Stroke="SaddleBrown"
+                           Fill="Brown"
+                           StrokeDashCap="Flat"
+                           StrokeThickness="2"
+                           x:Name="Rect"/>
+            </Canvas>
+        </GroupBox>
+    </Grid>
+</Window>
